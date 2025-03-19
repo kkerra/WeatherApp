@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:WeatherApp.ViewModels"
+			 xmlns:m="clr-namespace:WeatherApp.Models"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="WeatherApp.Views.WeatherView"
+             x:DataType="vm:WeatherViewModel">
+	
+    <UserControl.DataTemplates>
+		<DataTemplate DataType="m:Weather">
+			<Border BorderBrush="Black" BorderThickness="2" CornerRadius="10">
+				<StackPanel Background="LightPink">
+					<TextBlock Text="{Binding City.Name}"/>
+					<Image Source="{Binding IconBitmap^}" Width="50" Height="50"/>
+					<TextBlock Text="{Binding Description}"/>
+					<TextBlock Text="{Binding Temperature}"/>
+					<TextBlock Text="{Binding FeelsAsTemperature}"/>
+					<TextBlock Text="{Binding Humidity}"/>
+					<TextBlock Text="{Binding Pressure}"/>
+					<TextBlock Text="{Binding WindDirection}"/>
+					<TextBlock Text="{Binding WindSpeed}"/>
+					<TextBlock Text="{Binding Rain}"/>
+					<TextBlock Text="{Binding Snow}"/>
+				</StackPanel>
+			</Border>
+						
+		</DataTemplate>
+    </UserControl.DataTemplates>
+
+	<Grid RowDefinitions="Auto,  *" ColumnDefinitions="*">
+		<StackPanel Orientation="Horizontal" Grid.Row="0">
+			<TextBox Text="{Binding CityName}" Width="450" Margin="10"/>
+			<Button Content="Добавить" Margin="10" Command="{Binding AddWeatherAsyncCommand}" CommandParameter="{Binding CityName}"/>
+			<Button Content="Обновить" Margin="10"/>
+		</StackPanel>
+		<ScrollViewer Grid.Row="1">
+			<ItemsControl ItemsSource="{Binding WeatherList}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+			</ItemsControl>
+		</ScrollViewer>
+		
+	</Grid>
+</UserControl>
