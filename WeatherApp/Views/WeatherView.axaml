@@ -10,7 +10,7 @@
 	
     <UserControl.DataTemplates>
 		<DataTemplate DataType="m:Weather">
-			<Border BorderBrush="Black" BorderThickness="2" CornerRadius="10">
+			<Border BorderBrush="Black" BorderThickness="2" CornerRadius="10" Width="150" Height="250">
 				<StackPanel Background="LightPink">
 					<TextBlock Text="{Binding City.Name}"/>
 					<Image Source="{Binding IconBitmap^}" Width="50" Height="50"/>

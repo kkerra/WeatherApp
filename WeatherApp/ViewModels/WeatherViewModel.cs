@@ -25,7 +25,12 @@ namespace WeatherApp.ViewModels
         {
             _weatherService = weatherService;
 
-            var data = Preferences.Load(CityListKey, new List<City>());
+            var data = Preferences.Load(CityListKey, new List<City>()).Result;
+            CityList = [..data];
+            foreach(var city in cityList)
+            {
+                Forecast(city);
+            }
         }
 
         [RelayCommand]
@@ -36,17 +41,8 @@ namespace WeatherApp.ViewModels
                 var zipcode = await _weatherService.GetGeoByCityNameAsync(cityName);
                 if (zipcode == null)
                     return;
-                var weather = await _weatherService.GetWeatherByGeoAsync(zipcode.Longitude, zipcode.Latitude);
-                if (weather != null)
-                {
-                    weather.Temperature = Math.Round(weather.Temperature - 273.1, 2);
-                    weather.FeelsAsTemperature = Math.Round(weather.FeelsAsTemperature - 273.1, 2);
-                    weather.Pressure = Math.Round(weather.Pressure / 133.3 * 100, 0);
- 
-                    weatherList.Add(weather);
-                    cityList.Add(weather.City);
-                }
-
+                await Forecast(zipcode);
+                cityList.Add(zipcode);
                 await SaveCity();
             }
             catch (Exception ex)
@@ -55,10 +51,26 @@ namespace WeatherApp.ViewModels
             }
         }
 
+        private async Task Forecast(City zipcode)
+        {
+            var weather = await _weatherService.GetWeatherByGeoAsync(zipcode.Longitude, zipcode.Latitude);
+            if (weather != null)
+            {
+                weather.City = zipcode;
+                weather.Temperature = Math.Round(weather.Temperature - 273.1, 2);
+                weather.FeelsAsTemperature = Math.Round(weather.FeelsAsTemperature - 273.1, 2);
+                weather.Pressure = Math.Round(weather.Pressure / 133.3 * 100, 0);
+
+                weatherList.Add(weather);
+                
+            }
+        }
+
         [RelayCommand]
         private async Task SaveCity()
         {
-            await Preferences.Save(CityListKey, CityList);
+            await Preferences.Save(CityListKey, CityList);
+
         }
     }
 }
